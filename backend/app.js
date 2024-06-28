@@ -7,7 +7,7 @@ require("dotenv").config()
 
 const graphqlResolvers = require("./graphql/resolvers")
 const graphqlSchemas = require("./graphql/schemas")
-const { CustomError } = require("./utils")
+const path = require("path")
 
 const PORT = process.env.PORT
 const MONGO_URI = process.env.MONGO_URI
@@ -48,8 +48,9 @@ server.start().then(() => {
   server.applyMiddleware({ app, path: "/api/graphql" })
   const httpServer = http.createServer(app)
 
-  app.get("/", () => {
-    console.log("lol")
+  app.use(express.static(path.resolve(__dirname, "dist")))
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "dist/index.html"))
   })
 
   mongoose.connect(MONGO_URI).then(() => {
