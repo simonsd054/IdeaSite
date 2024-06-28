@@ -86,14 +86,18 @@ jobs:
         run: |
           cd ./frontend
           npm install
-          npm run build
+          VITE_API_ENDPOINT=${{ secrets.VITE_API_ENDPOINT }} npm run build
           rm -rf ../backend/dist
           mv dist ../backend
 
       - name: Deploy to Cloud Run
         id: deploy
-        uses: google-github-actions/deploy-cloudrun@v0
+        uses: google-github-actions/deploy-cloudrun@v2
         with:
+          env_vars: |-
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            MONGO_URI=${{ secrets.MONGO_URI }}
+            PORT=${{ secrets.PORT }}
           service: ${{ env.SERVICE }}
           region: ${{ env.REGION }}
           # NOTE: If required, update to the appropriate source folder
