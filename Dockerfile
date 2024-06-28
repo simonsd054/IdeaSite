@@ -8,7 +8,7 @@ RUN npm install
 
 COPY ./frontend ./
 
-ARG VITE_API_ENDPOINT=http://localhost:8000/api/graphql
+ARG VITE_API_ENDPOINT=/api/graphql
 
 ENV VITE_API_ENDPOINT=${VITE_API_ENDPOINT}
 

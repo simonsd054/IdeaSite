@@ -1,6 +1,6 @@
 import { GraphQLClient } from "graphql-request"
 
-const endpoint = import.meta.env.VITE_API_ENDPOINT
+const endpoint = window.location.origin + import.meta.env.VITE_API_ENDPOINT
 
 const graphQLClient = new GraphQLClient(endpoint, {
   errorPolicy: "all",
