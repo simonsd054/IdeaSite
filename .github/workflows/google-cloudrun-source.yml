@@ -98,7 +98,6 @@ jobs:
           env_vars: |-
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             MONGO_URI=${{ secrets.MONGO_URI }}
-            PORT=${{ secrets.PORT }}
           service: ${{ env.SERVICE }}
           region: ${{ env.REGION }}
           # NOTE: If required, update to the appropriate source folder
