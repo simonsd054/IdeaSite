@@ -85,6 +85,7 @@ jobs:
         id: install
         run: |
           cd ./frontend
+          npm install
           npm run build
           rm -rf ../backend/dist
           mv dist ../backend
