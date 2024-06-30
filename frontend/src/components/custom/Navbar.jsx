@@ -28,9 +28,9 @@ const navbarItemsLoggedIn = [
 const navbarItemsNotLoggedIn = [
   {
     content: "Register",
-    linkTo: "/register",
+    linkTo: "/auth/register",
   },
-  { content: "Login", linkTo: "/login" },
+  { content: "Login", linkTo: "/auth/login" },
 ]
 
 export default function Navbar() {
@@ -52,7 +52,7 @@ export default function Navbar() {
   const splittedUserName = store?.user?.name?.split(" ")
 
   return (
-    <NavigationMenu className="bg-slate-200 max-w-full justify-between p-3">
+    <NavigationMenu className="bg-slate-200 w-full max-w-full justify-between p-3 fixed h-[64px] top-0">
       <NavigationMenuList className="flex gap-5">
         <NavigationMenuItem>
           <Link to="/" className="text-slate-800 text-lg hover:text-slate-600">

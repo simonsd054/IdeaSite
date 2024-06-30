@@ -19,7 +19,7 @@ export default function FormTextArea({
         htmlFor={id}
         className={`${errors[registerName] && "text-red-700"}`}
       >
-        Body
+        {label}
       </Label>
       <Textarea
         id={id}

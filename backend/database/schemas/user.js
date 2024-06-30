@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema(
         message: (props) => `${props.value} already exists`,
       },
     },
-    email_verified_at: Date,
+    emailVerifiedAt: Date,
     password: {
       type: String,
       required: true,
@@ -29,8 +29,8 @@ const userSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    // TODO: change friends_ids to junction table
-    fiends_ids: [
+    // TODO: change friendsIds to junction table
+    fiendsIds: [
       {
         type: mongoose.Schema.Types.ObjectId,
       },

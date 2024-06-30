@@ -1,12 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
-import { gql } from "graphql-request"
 import { Loader2 } from "lucide-react"
 
 import Idea from "@/components/custom/Idea"
 import { useToast } from "@/components/ui/use-toast"
 
 import { getIdeas } from "@/apis/idea"
-import ErrorPage from "@/pages/ErrorPage"
 
 export default function IdeaList({ queryKey, queryName }) {
   const { toast } = useToast()
@@ -20,9 +18,11 @@ export default function IdeaList({ queryKey, queryName }) {
   const ideas = data?.data?.[queryKey]
 
   return (
-    <div className="flex flex-col items-center gap-5">
+    <div className="flex flex-col items-center gap-5 mb-10">
       {isError && (
-        <h1 className="text-2xl text-red-700">Something's wrong! Try again later!</h1>
+        <h1 className="text-2xl text-red-700">
+          Something's wrong! Try again later!
+        </h1>
       )}
       {isPending ? (
         <Loader2 />

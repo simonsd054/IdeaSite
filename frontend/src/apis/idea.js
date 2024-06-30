@@ -41,6 +41,33 @@ const getIdea = async (variables) => {
   return await graphQLClient.rawRequest(query, variables)
 }
 
+const getIdeaWithUserAndComment = async (variables) => {
+  const query = gql`
+    query GetIdea($id: ID!) {
+      idea(id: $id) {
+        id
+        title
+        body
+        createdAt
+        user {
+          id
+          name
+        }
+        comments {
+          id
+          body
+          createdAt
+          user {
+            id
+            name
+          }
+        }
+      }
+    }
+  `
+  return await graphQLClient.rawRequest(query, variables)
+}
+
 const createIdea = async (variables) => {
   const query = gql`
     mutation CreateIdea($title: String!, $body: String!) {
@@ -85,4 +112,11 @@ const deleteIdea = async (variables) => {
   return await graphQLClient.rawRequest(query, variables)
 }
 
-export { getIdeas, getIdea, createIdea, updateIdea, deleteIdea }
+export {
+  getIdeas,
+  getIdea,
+  getIdeaWithUserAndComment,
+  createIdea,
+  updateIdea,
+  deleteIdea,
+}

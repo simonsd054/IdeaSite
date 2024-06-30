@@ -12,8 +12,8 @@ const upVoteSchema = gql`
     vote(id: ID!): Vote!
   }
   extend type Mutation {
-    createVote(idea_id: ID!, vote: Int!): Vote!
-    updateVote(id: ID!, idea_id: ID!, vote: Int!): Vote!
+    createVote(ideaId: ID!, vote: Int!): Vote!
+    updateVote(id: ID!, ideaId: ID!, vote: Int!): Vote!
     deleteVote(id: ID!): Vote!
   }
 `

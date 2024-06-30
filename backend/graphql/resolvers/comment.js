@@ -1,24 +1,25 @@
 const { Comment, Idea, User } = require("../../database/schemas")
+const { verifyToken } = require("../../utils")
 
 const commentResolvers = {
   Comment: {
     user: async (parent) => {
       try {
-        return await User.findById(parent.user_id)
+        return await User.findById(parent.userId)
       } catch (err) {
         throw err
       }
     },
     idea: async (parent) => {
       try {
-        return await Idea.findById(parent.idea_id)
+        return await Idea.findById(parent.ideaId)
       } catch (err) {
         throw err
       }
     },
     comment: async (parent) => {
       try {
-        return await Comment.findById(parent.comment_id)
+        return await Comment.findById(parent.commentId)
       } catch (err) {
         throw err
       }
@@ -26,7 +27,7 @@ const commentResolvers = {
     replies: async (parent) => {
       try {
         return await Comment.find({
-          comment_id: parent.id,
+          commentId: parent.id,
         })
       } catch (err) {
         throw err
@@ -62,7 +63,7 @@ const commentResolvers = {
     comments: async () => {
       try {
         const comments = await Comment.find({
-          comment_id: null,
+          commentId: null,
         })
         return comments
       } catch (err) {
@@ -71,18 +72,56 @@ const commentResolvers = {
     },
   },
   Mutation: {
-    createComment: async (_, { body, idea_id, comment_id }, context) => {
+    createComment: async (_, { body, ideaId, commentId }, context) => {
       try {
         const user = await verifyToken(context.token)
         let comment = {
           body,
-          user_id: user._id,
-          idea_id,
-          comment_id,
+          userId: user._id,
+          ideaId,
+          commentId,
           is_author: false,
           is_suggested_to: false,
         }
         comment = await Comment.create(comment)
+        return comment
+      } catch (err) {
+        throw err
+      }
+    },
+    updateComment: async (_, { id, body, ideaId }, context) => {
+      try {
+        const user = await verifyToken(context.token)
+        let comment = {
+          body,
+        }
+        const updatedComment = await Comment.findOneAndUpdate(
+          {
+            _id: id,
+            userId: user._id,
+            ideaId,
+          },
+          comment
+        )
+        if (!updatedComment) {
+          throw new CustomError("Comment couldn't be updated.")
+        }
+        return updatedComment
+      } catch (err) {
+        throw err
+      }
+    },
+    deleteComment: async (_, { id, ideaId }, context) => {
+      try {
+        const user = await verifyToken(context.token)
+        const comment = await Comment.findOneAndDelete({
+          _id: id,
+          userId: user._id,
+          ideaId,
+        })
+        if (!comment) {
+          throw new CustomError("Comment couldn't be deleted.")
+        }
         return comment
       } catch (err) {
         throw err

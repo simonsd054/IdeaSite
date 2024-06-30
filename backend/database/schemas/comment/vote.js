@@ -2,12 +2,12 @@ const mongoose = require("mongoose")
 
 const voteSchema = new mongoose.Schema(
   {
-    user_id: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    comment_id: {
+    commentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Comment",
       required: true,
