@@ -16,7 +16,7 @@ export default function EditIdeaPage() {
   const queryClient = useQueryClient()
 
   const { data, isPending } = useQuery({
-    queryKey: [`idea-${params.id}`],
+    queryKey: ["ideas", params.id],
     queryFn: () => {
       return getIdea({ id: params.id }, toast)
     },
@@ -60,7 +60,9 @@ export default function EditIdeaPage() {
     <>
       <h2 className="text-3xl font-bold text-center mb-10">Edit Idea</h2>
       {isPending ? (
-        <Loader2 />
+        <div className="flex justify-center">
+          <Loader2 />
+        </div>
       ) : (
         <IdeaForm isEdit prevValues={data?.data?.idea} onSubmit={onSubmit} />
       )}

@@ -6,10 +6,12 @@ const commentSchema = gql`
     body: String!
     user: User!
     idea: Idea!
-    is_author: Boolean!
-    is_suggested_to: Boolean!
+    isAuthor: Boolean!
+    isSuggestedTo: Boolean!
     comment: Comment
     replies: [Comment]!
+    createdAt: String
+    updatedAt: String
   }
   extend type Query {
     comments: [Comment]!
@@ -17,9 +19,9 @@ const commentSchema = gql`
     comment(id: ID!): Comment!
   }
   extend type Mutation {
-    createComment(body: String!, idea_id: ID!, comment_id: ID!): Comment!
-    updateComment(id: ID!, body: String!): Comment!
-    deleteComment(id: ID!): Comment!
+    createComment(body: String!, ideaId: ID!, commentId: ID): Comment!
+    updateComment(id: ID!, body: String!, ideaId: ID!): Comment!
+    deleteComment(id: ID!, ideaId: ID!): Comment!
   }
 `
 

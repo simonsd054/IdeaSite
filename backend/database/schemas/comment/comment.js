@@ -6,29 +6,23 @@ const commentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    user_id: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    idea_id: {
+    ideaId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Idea",
       required: true,
     },
     //comment or reply
-    comment_id: {
+    commentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Comment",
     },
-    is_author: {
-      type: Boolean,
-      required: true,
-    },
-    is_suggested_to: {
-      type: Boolean,
-      required: true,
-    },
+    isAuthor: Boolean,
+    isSuggestedTo: Boolean,
   },
   {
     timestamps: true,

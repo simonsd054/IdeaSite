@@ -10,24 +10,24 @@ const ideaSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    user_id: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    co_authors_ids: [
+    coAuthorsIds: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],
-    suggested_to_ids: [
+    suggestedToIds: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],
-    derived_from_ids: [
+    derivedFromIds: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Idea",

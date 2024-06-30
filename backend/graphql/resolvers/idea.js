@@ -5,7 +5,7 @@ const ideaResolvers = {
   Idea: {
     user: async (parent) => {
       try {
-        return await User.findById(parent.user_id)
+        return await User.findById(parent.userId)
       } catch (err) {
         throw err
       }
@@ -14,7 +14,7 @@ const ideaResolvers = {
       try {
         const co_authors = await User.find({
           _id: {
-            $in: parent.co_authors_ids,
+            $in: parent.coAuthorsIds,
           },
         })
         return co_authors
@@ -26,7 +26,7 @@ const ideaResolvers = {
       try {
         const suggested_to = await User.find({
           _id: {
-            $in: parent.suggested_to_ids,
+            $in: parent.suggestedToIds,
           },
         })
         return suggested_to
@@ -38,7 +38,7 @@ const ideaResolvers = {
       try {
         const derived_from = await Idea.find({
           _id: {
-            $in: parent.derived_from_ids,
+            $in: parent.derivedFromIds,
           },
         })
         return derived_from
@@ -49,8 +49,8 @@ const ideaResolvers = {
     comments: async (parent) => {
       try {
         const comments = await Comment.find({
-          idea_id: parent._id,
-        })
+          ideaId: parent._id,
+        }).sort({ updatedAt: -1 })
         return comments
       } catch (err) {
         throw err
@@ -59,7 +59,7 @@ const ideaResolvers = {
     votes: async (parent) => {
       try {
         const votes = Vote.find({
-          idea_id: parent._id,
+          ideaId: parent._id,
         })
         return votes
       } catch (err) {
@@ -70,7 +70,7 @@ const ideaResolvers = {
   Vote: {
     user: async (parent) => {
       try {
-        const user = User.findById(parent.user_id)
+        const user = User.findById(parent.userId)
         return user
       } catch (err) {
         throw err
@@ -78,7 +78,7 @@ const ideaResolvers = {
     },
     idea: async (parent) => {
       try {
-        const idea = Idea.findById(parent.idea_id)
+        const idea = Idea.findById(parent.ideaId)
         return idea
       } catch (err) {
         throw err
@@ -109,7 +109,7 @@ const ideaResolvers = {
       try {
         const user = await verifyToken(context.token)
         const ideas = await Idea.find({
-          user_id: user._id,
+          userId: user._id,
         }).sort({ updatedAt: -1 })
         return ideas
       } catch (err) {
@@ -147,7 +147,7 @@ const ideaResolvers = {
         let idea = {
           title,
           body,
-          user_id: user._id,
+          userId: user._id,
           co_authors,
           suggested_to,
           derived_from,
@@ -168,12 +168,18 @@ const ideaResolvers = {
         let idea = {
           title,
           body,
-          user_id: user._id,
+          userId: user._id,
           co_authors,
           suggested_to,
           derived_from,
         }
-        const updatedIdea = await Idea.findByIdAndUpdate(id, idea)
+        const updatedIdea = await Idea.findOneAndUpdate(
+          {
+            _id: id,
+            userId: user._id,
+          },
+          idea
+        )
         if (!updatedIdea) {
           throw new CustomError("Idea couldn't be updated.")
         }
@@ -187,7 +193,7 @@ const ideaResolvers = {
         const user = await verifyToken(context.token)
         const idea = await Idea.findOneAndDelete({
           _id: id,
-          user_id: user._id,
+          userId: user._id,
         })
         if (!idea) {
           throw new CustomError("Idea couldn't be deleted.")
@@ -197,12 +203,12 @@ const ideaResolvers = {
         throw err
       }
     },
-    createVote: async (_, { idea_id, vote }, context) => {
+    createVote: async (_, { ideaId, vote }, context) => {
       try {
         const user = await verifyToken(context.token)
         let voteCreated = {
-          user_id: user._id,
-          idea_id,
+          userId: user._id,
+          ideaId,
           vote,
         }
         voteCreated = await Vote.create(voteCreated)

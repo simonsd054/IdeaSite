@@ -1,7 +1,5 @@
-import { useState } from "react"
 import { Link } from "react-router-dom"
 import { EditIcon, Loader2, Trash } from "lucide-react"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import {
   Card,
@@ -22,14 +20,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { useToast } from "@/components/ui/use-toast"
 
-import { deleteIdea } from "@/apis/idea"
-import { graphqlError } from "@/utils/error"
-import { useGlobalContext } from "@/utils/reducer"
-
-export default function Idea({ idea }) {
-  const {
+export default function IdeaDetailCard({
+  idea,
+  loggedInUserId,
+  openIdeaDeleteAlert,
+  setOpenIdeaDeleteAlert,
+  isDeleteIdeaMutationPending,
+  onClickDelete,
+}) {
+  let {
     id,
     title,
     body,
@@ -43,69 +43,24 @@ export default function Idea({ idea }) {
     timeStyle: "short",
     timeZone: "Australia/Sydney",
   })
-
-  const [open, setOpen] = useState(false)
-
-  const { store } = useGlobalContext()
-
-  const queryClient = useQueryClient()
-
-  const deleteIdeaMutation = useMutation({
-    mutationFn: (variables) => {
-      return deleteIdea(variables)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["ideas"] })
-      queryClient.invalidateQueries({ queryKey: ["myIdeas"] })
-    },
-  })
-
-  const { toast } = useToast()
-
-  const onClickDelete = async () => {
-    try {
-      const deleteIdeaResp = await deleteIdeaMutation.mutateAsync({ id })
-      const errors = graphqlError(deleteIdeaResp)
-      if (errors) {
-        toast({
-          title: errors,
-        })
-      } else {
-        toast({
-          title: "Idea Deleted",
-        })
-      }
-      setOpen(false)
-    } catch (err) {
-      console.log(err)
-      toast({
-        title: "Something went wrong!",
-      })
-    }
-  }
-
   return (
-    <Card className="w-1/2 bg-slate-100">
+    <Card className="w-1/2 bg-slate-100 rounded-b-none">
       <CardHeader>
-        <Link to={`/ideas/${id}`} state={{ idea }} className="hover:underline">
-          <CardTitle className="text-center">{title}</CardTitle>
-        </Link>
+        <CardTitle className="text-center">{title}</CardTitle>
         <h1 className="text-lg">{name}</h1>
         <CardDescription>{date}</CardDescription>
       </CardHeader>
-      <Link to={`/ideas/${id}`}>
-        <CardContent>
-          <p>{body}</p>
-        </CardContent>
-      </Link>
-      {store?.user?.id === userId && (
+      <CardContent>
+        <p>{body}</p>
+      </CardContent>
+      {loggedInUserId === userId && (
         <CardFooter className="flex justify-around">
           <Link to={`/ideas/${id}/edit`}>
             <Button variant="outline">
               <EditIcon className="mr-2 h-4 w-4" /> Edit
             </Button>
           </Link>
-          <AlertDialog open={open} onOpenChange={setOpen}>
+          <AlertDialog open={openIdeaDeleteAlert} onOpenChange={setOpenIdeaDeleteAlert}>
             <AlertDialogTrigger asChild>
               <Button variant="outline">
                 <Trash className="mr-2 h-4 w-4" />
@@ -124,10 +79,10 @@ export default function Idea({ idea }) {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <Button
-                  disabled={deleteIdeaMutation.isPending}
-                  onClick={onClickDelete}
+                  disabled={isDeleteIdeaMutationPending}
+                  onClick={() => onClickDelete(id)}
                 >
-                  {deleteIdeaMutation.isPending && (
+                  {isDeleteIdeaMutationPending && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
                   Yes

@@ -14,8 +14,10 @@ import {
   Login,
   MyIdeasPage,
   EditIdeaPage,
+  IdeaDetailPage,
 } from "./pages"
 import ProtectedRoute from "./components/custom/ProtectedRoute.jsx"
+import ForwardToHome from "./components/custom/ForwardToHome.jsx"
 
 const initialState = {
   token: localStorage.getItem("token") ?? "",
@@ -29,12 +31,19 @@ const router = createBrowserRouter([
     // errorElement: <ErrorPage />,
     children: [
       {
-        path: "/register",
-        element: <Register />,
-      },
-      {
-        path: "/login",
-        element: <Login />,
+        path: "/auth",
+        element: <ForwardToHome />,
+        children: [
+
+          {
+            path: "register",
+            element: <Register />,
+          },
+          {
+            path: "login",
+            element: <Login />,
+          },
+        ]
       },
       {
         path: "/",
@@ -47,6 +56,10 @@ const router = createBrowserRouter([
           {
             path: "/ideas/:id/edit",
             element: <EditIdeaPage />,
+          },
+          {
+            path: "/ideas/:id",
+            element: <IdeaDetailPage />,
           },
           {
             path: "/my-ideas",
@@ -64,14 +77,14 @@ const router = createBrowserRouter([
 
 function MainPage() {
   return (
-    <div className="wrapper-grid mb-10">
-      <header className="grid-area-header">
+    <>
+      <header className="mb-[84px]">
         <Navbar />
       </header>
-      <main className="grid-area-body">
+      <main>
         <Outlet />
       </main>
-    </div>
+    </>
   )
 }
 
