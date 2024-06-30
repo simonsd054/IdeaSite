@@ -21,7 +21,7 @@ import ForwardToHome from "./components/custom/ForwardToHome.jsx"
 
 const initialState = {
   token: localStorage.getItem("token") ?? "",
-  user: JSON.parse(localStorage.getItem("user")) ?? "",
+  user: JSON.parse(JSON.stringify(localStorage.getItem("user"))) ?? "",
 }
 
 const router = createBrowserRouter([
