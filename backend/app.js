@@ -26,7 +26,10 @@ const server = new ApolloServer({
 
     // Return a different error message
     if (formattedError.extensions.code === "Custom") {
-      error.error = formattedError.message
+      error.extensions = {
+        code: formattedError.extensions.code,
+      }
+      error.message = formattedError.message
     } else {
       // Otherwise return "Something went wrong"
       error.error = "Something went wrong"
