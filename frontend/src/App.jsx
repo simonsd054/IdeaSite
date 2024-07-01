@@ -78,14 +78,14 @@ const router = createBrowserRouter([
 
 function MainPage() {
   return (
-    <>
+    <div className="mb-10">
       <header className="mb-[84px]">
         <Navbar />
       </header>
       <main>
         <Outlet />
       </main>
-    </>
+    </div>
   )
 }
 

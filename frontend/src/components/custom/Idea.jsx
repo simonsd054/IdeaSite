@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import { EditIcon, Loader2, Trash } from "lucide-react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import TextTruncate from "react-text-truncate"
 
 import {
   Card,
@@ -85,7 +86,7 @@ export default function Idea({ idea }) {
   }
 
   return (
-    <Card className="w-1/2 bg-slate-100">
+    <Card className="w-1/2 bg-slate-100 hover:shadow-lg">
       <CardHeader>
         <Link to={`/ideas/${id}`} state={{ idea }} className="hover:underline">
           <CardTitle className="text-center">{title}</CardTitle>
@@ -95,7 +96,17 @@ export default function Idea({ idea }) {
       </CardHeader>
       <Link to={`/ideas/${id}`}>
         <CardContent>
-          <p>{body}</p>
+          <TextTruncate
+            line={4}
+            element="div"
+            truncateText="…"
+            text={body}
+            textTruncateChild={
+              <span className="text-blue-800 hover:underline">
+                Click to read more
+              </span>
+            }
+          />
         </CardContent>
       </Link>
       {store?.user?.id === userId && (

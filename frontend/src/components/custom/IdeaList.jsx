@@ -18,7 +18,7 @@ export default function IdeaList({ queryKey, queryName }) {
   const ideas = data?.data?.[queryKey]
 
   return (
-    <div className="flex flex-col items-center gap-5 mb-10">
+    <div className="flex flex-col items-center gap-5">
       {isError && (
         <h1 className="text-2xl text-red-700">
           Something's wrong! Try again later!
