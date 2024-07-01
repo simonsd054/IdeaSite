@@ -1,22 +1,30 @@
 const express = require("express")
 const http = require("http")
 
-const { ApolloServer } = require("apollo-server-express")
+const { ApolloServer } = require("@apollo/server")
+const { expressMiddleware } = require("@apollo/server/express4")
+const {
+  ApolloServerPluginDrainHttpServer,
+} = require("@apollo/server/plugin/drainHttpServer")
 const mongoose = require("mongoose")
 require("dotenv").config()
 
 const graphqlResolvers = require("./graphql/resolvers")
 const graphqlSchemas = require("./graphql/schemas")
 const path = require("path")
+const cors = require("cors")
 
 const PORT = process.env.PORT
 const MONGO_URI = process.env.MONGO_URI
 
 const app = express()
 
+const httpServer = http.createServer(app)
+
 const server = new ApolloServer({
   typeDefs: graphqlSchemas,
   resolvers: graphqlResolvers,
+  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   formatError: (formattedError) => {
     let error = {}
     // in development, return full error for easy debugging
@@ -38,18 +46,23 @@ const server = new ApolloServer({
     // Use error key of this object in the frontend
     return error
   },
-  context: ({ req, res }) => {
-    // Get the user token from the headers.
-    let token = req.headers.authorization || ""
-
-    token = token?.split(" ")?.[1] // token
-    return { token }
-  },
 })
 
 server.start().then(() => {
-  server.applyMiddleware({ app, path: "/api/graphql" })
-  const httpServer = http.createServer(app)
+  app.use(
+    "/api/graphql",
+    cors(),
+    express.json(),
+    expressMiddleware(server, {
+      context: ({ req, res }) => {
+        // Get the user token from the headers.
+        let token = req.headers.authorization || ""
+
+        token = token?.split(" ")?.[1] // token
+        return { token }
+      },
+    })
+  )
 
   app.use(express.static(path.resolve(__dirname, "dist")))
   app.get("*", (req, res) => {
